@@ -1,20 +1,23 @@
 package com.job.tracker.service;
 
 import com.job.tracker.model.Jobs;
+import com.job.tracker.model.JobsHistory;
+import com.job.tracker.repository.JobsHistoryRepo;
 import com.job.tracker.repository.JobsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JobsService {
 
-    Jobs jobs;
-
     @Autowired
     JobsRepo repo;
+
+    @Autowired
+    JobsHistoryRepo jobHistoryRepo;
 
     public List<Jobs> getJobs() {
         return repo.findAll();
@@ -27,6 +30,17 @@ public class JobsService {
     public void updateJobs(int id , Jobs jobs) {
         Jobs job = repo.findById(id).orElse(null);
 
+        if(job.getStatus() != jobs.getStatus()){
+            job.setStatus(jobs.getStatus());
+
+            JobsHistory jobsHistory = new  JobsHistory();
+            jobsHistory.setStatus(jobs.getStatus());
+            jobsHistory.setCompany(jobs.getCompanyName());
+            jobsHistory.setChange_date(LocalDate.now());
+            jobsHistory.setJob(jobs.getJobRole());
+            jobHistoryRepo.save(jobsHistory);
+        }
+
         job.setId(jobs.getId());
         job.setJobRole(jobs.getJobRole());
         job.setJobDescription(jobs.getJobDescription());
@@ -34,8 +48,9 @@ public class JobsService {
         job.setDeadline(jobs.getDeadline());
         job.setLocation(jobs.getLocation());
         job.setSalary(jobs.getSalary());
-        job.setStatus(jobs.getStatus());
         job.setCompanyName(jobs.getCompanyName());
+
+
 
         repo.save(job);
     }

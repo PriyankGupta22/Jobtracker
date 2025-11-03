@@ -1,7 +1,9 @@
 package com.job.tracker.controller;
 
 import com.job.tracker.model.Jobs;
+import com.job.tracker.model.JobsHistory;
 import com.job.tracker.service.JobsService;
+import com.job.tracker.service.jobsHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ public class JobsController {
 
     @Autowired
     JobsService service;
+
+    @Autowired
+    jobsHistoryService jobsHistoryService;
 
     @GetMapping("/")
     public String Greet() {
@@ -40,4 +45,8 @@ public class JobsController {
         service.deleteJob(id);
     }
 
+    @GetMapping("/jobs-history")
+    public List<JobsHistory> getHistory(){
+        return jobsHistoryService.getJobsHistory();
+    }
 }
