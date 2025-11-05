@@ -49,4 +49,14 @@ public class JobsController {
     public List<JobsHistory> getHistory(){
         return jobsHistoryService.getJobsHistory();
     }
+
+    @GetMapping("/jobs/filter-companyName/{constraint}")
+    public List<Jobs> getFilteredJobs(@PathVariable String constraint){
+        return service.getFilterCompany(constraint);
+    }
+
+    @GetMapping("/jobs/filter-location/{constraint}")
+    public List<Jobs> getFilteredJobsLocation(@PathVariable String constraint){
+        return service.getFilterLocation(constraint);
+    }
 }
